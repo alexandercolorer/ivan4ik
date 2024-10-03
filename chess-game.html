@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chess Challenge</title>
+    <title>Drag and Drop Chess Challenge</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -27,21 +27,26 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 24px;
+            font-size: 36px;
+            border: 1px solid #333;
+            cursor: pointer;
         }
         .white { background-color: #eee; }
         .black { background-color: #aaa; }
+        .draggable {
+            cursor: grab;
+        }
     </style>
 </head>
 <body>
-    <h1>Chess Challenge</h1>
+    <h1>Drag and Drop Chess Challenge</h1>
     <div id="board"></div>
     <p id="message"></p>
     <script>
         const boardElement = document.getElementById('board');
         const messageElement = document.getElementById('message');
 
-        const board = [
+        const initialBoard = [
             ['♖', '', '', '', '♔', '', '', '♖'],
             ['', '', '', '', '', '', '', ''],
             ['', '', '♙', '', '', '', '', ''],
@@ -58,34 +63,52 @@
                 for (let col = 0; col < 8; col++) {
                     const cell = document.createElement('div');
                     cell.className = 'cell ' + ((row + col) % 2 === 0 ? 'white' : 'black');
-                    cell.innerHTML = board[row][col];
                     cell.dataset.row = row;
                     cell.dataset.col = col;
-                    cell.addEventListener('click', movePiece);
+
+                    if (initialBoard[row][col] !== '') {
+                        const piece = document.createElement('div');
+                        piece.innerHTML = initialBoard[row][col];
+                        piece.className = 'draggable';
+                        piece.draggable = true;
+                        piece.ondragstart = dragStart;
+                        cell.appendChild(piece);
+                    }
+
+                    cell.ondragover = allowDrop;
+                    cell.ondrop = dropPiece;
                     boardElement.appendChild(cell);
                 }
             }
         }
 
-        function movePiece(event) {
-            const fromRow = prompt("Enter your piece's current row (0-7):");
-            const fromCol = prompt("Enter your piece's current column (0-7):");
-            const toRow = prompt("Enter the row you want to move to (0-7):");
-            const toCol = prompt("Enter the column you want to move to (0-7):");
+        function dragStart(event) {
+            event.dataTransfer.setData('text/plain', event.target.innerHTML);
+            event.target.style.opacity = '0.5';
+        }
 
-            if (board[fromRow][fromCol] && board[toRow][toCol] === '') {
-                board[toRow][toCol] = board[fromRow][fromCol];
-                board[fromRow][fromCol] = '';
-                drawBoard();
+        function allowDrop(event) {
+            event.preventDefault();
+        }
 
-                // Check if the king has been moved
-                if (toRow == 0 && toCol == 4) {
-                    messageElement.innerText = "You moved the king! Here's your next clue: [insert next clue link here]";
-                } else {
-                    messageElement.innerText = "Keep playing!";
+        function dropPiece(event) {
+            event.preventDefault();
+            const piece = event.dataTransfer.getData('text/plain');
+            const targetCell = event.target;
+
+            if (targetCell.className.includes('cell')) {
+                targetCell.innerHTML = piece;
+                const previousCell = document.querySelector(`.draggable[draggable='true']`);
+                if (previousCell) {
+                    previousCell.innerHTML = ''; // Remove the piece from the previous cell
                 }
+            }
+
+            // Check for completion
+            if (piece === '♔' && targetCell.dataset.row == 0 && targetCell.dataset.col == 4) {
+                messageElement.innerText = "You successfully moved the king! Here's your next clue: [insert next clue link here]";
             } else {
-                alert("Invalid move! Please try again.");
+                messageElement.innerText = "Keep playing!";
             }
         }
 
