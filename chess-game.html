@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Challenge</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f7f0d5;
+            color: #333;
+        }
+        h1 {
+            color: #ff6347;
+        }
+        #board {
+            display: grid;
+            grid-template-columns: repeat(8, 60px);
+            grid-template-rows: repeat(8, 60px);
+            margin: 20px auto;
+            border: 2px solid #333;
+        }
+        .cell {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+        }
+        .white { background-color: #eee; }
+        .black { background-color: #aaa; }
+    </style>
+</head>
+<body>
+    <h1>Chess Challenge</h1>
+    <div id="board"></div>
+    <p id="message"></p>
+    <script>
+        const boardElement = document.getElementById('board');
+        const messageElement = document.getElementById('message');
+
+        const board = [
+            ['♖', '', '', '', '♔', '', '', '♖'],
+            ['', '', '', '', '', '', '', ''],
+            ['', '', '♙', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', ''],
+            ['', '', '♟', '', '', '', '', ''],
+            ['♜', '', '', '', '♚', '', '', '♜']
+        ];
+
+        function drawBoard() {
+            boardElement.innerHTML = '';
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell ' + ((row + col) % 2 === 0 ? 'white' : 'black');
+                    cell.innerHTML = board[row][col];
+                    cell.dataset.row = row;
+                    cell.dataset.col = col;
+                    cell.addEventListener('click', movePiece);
+                    boardElement.appendChild(cell);
+                }
+            }
+        }
+
+        function movePiece(event) {
+            const fromRow = prompt("Enter your piece's current row (0-7):");
+            const fromCol = prompt("Enter your piece's current column (0-7):");
+            const toRow = prompt("Enter the row you want to move to (0-7):");
+            const toCol = prompt("Enter the column you want to move to (0-7):");
+
+            if (board[fromRow][fromCol] && board[toRow][toCol] === '') {
+                board[toRow][toCol] = board[fromRow][fromCol];
+                board[fromRow][fromCol] = '';
+                drawBoard();
+
+                // Check if the king has been moved
+                if (toRow == 0 && toCol == 4) {
+                    messageElement.innerText = "You moved the king! Here's your next clue: [insert next clue link here]";
+                } else {
+                    messageElement.innerText = "Keep playing!";
+                }
+            } else {
+                alert("Invalid move! Please try again.");
+            }
+        }
+
+        drawBoard();
+    </script>
+</body>
+</html>
