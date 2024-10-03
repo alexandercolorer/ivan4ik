@@ -46,9 +46,10 @@
         const boardElement = document.getElementById('board');
         const messageElement = document.getElementById('message');
 
+        // Updated initial board setup
         const initialBoard = [
-            ['♖', '', '', '', '♔', '', '', '♖'],
-            ['', '', '', '', '', '', '', ''],
+            ['♖', '', '', '', '', '', '', '♖'],
+            ['', '', '', '', '♔', '', '', ''],  // White King (♔) now starts at Row 1, Column 4
             ['', '', '♙', '', '', '', '', ''],
             ['', '', '', '', '', '', '', ''],
             ['', '', '', '', '', '', '', ''],
@@ -106,7 +107,7 @@
 
             // Check for completion
             if (piece === '♔' && targetCell.dataset.row == 0 && targetCell.dataset.col == 4) {
-                messageElement.innerText = "You successfully moved the king! Here's your next clue: [insert next clue link here]";
+                messageElement.innerText = "You successfully moved the white king! Here's your next clue: [insert next clue link here]";
             } else {
                 messageElement.innerText = "Keep playing!";
             }
