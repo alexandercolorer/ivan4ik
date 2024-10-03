@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday!</title>
+    <style>
+        body {
+            background-color: #f7f0d5;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            color: #ff6347;
+            font-size: 3rem;
+            margin-top: 50px;
+        }
+        p {
+            font-size: 1.2rem;
+            margin: 20px;
+        }
+        .clue {
+            background-color: #ffeb3b;
+            padding: 10px 20px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 20px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .clue:hover {
+            background-color: #fbc02d;
+        }
+    </style>
+</head>
+<body>
+    <h1>Happy Birthday, [Friend's Name]!</h1>
+    <p>Welcome to your birthday scavenger hunt!</p>
+    <p>Your first clue awaits...</p>
+    
+    <!-- First clue: This can lead to another website -->
+    <a href="https://example.com" class="clue">Click here for your first clue!</a>
+</body>
+</html>
