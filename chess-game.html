@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Drag and Drop Chess Challenge</title>
+    <title>Chess Challenge</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,7 +16,7 @@
         }
         #board {
             display: grid;
-            grid-template-columns: repeat(8, 60px);
+            grid-template-columns: repeat(10, 60px);
             grid-template-rows: repeat(8, 60px);
             margin: 20px auto;
             border: 2px solid #333;
@@ -27,89 +27,68 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 36px;
-            border: 1px solid #333;
-            cursor: pointer;
+            font-size: 24px;
         }
         .white { background-color: #eee; }
         .black { background-color: #aaa; }
-        .draggable {
-            cursor: grab;
-        }
     </style>
 </head>
 <body>
-    <h1>Drag and Drop Chess Challenge</h1>
+    <h1>Chess Challenge</h1>
     <div id="board"></div>
     <p id="message"></p>
+    <p id="hint" style="display: none;">You moved the king to the correct position! Here's your next clue: [insert next clue link here]</p>
     <script>
         const boardElement = document.getElementById('board');
         const messageElement = document.getElementById('message');
+        const hintElement = document.getElementById('hint');
 
-        // Updated initial board setup
-        const initialBoard = [
-            ['♖', '', '', '', '', '', '', '♖'],
-            ['', '', '', '', '♔', '', '', ''],  // White King (♔) now starts at Row 1, Column 4
-            ['', '', '♙', '', '', '', '', ''],
-            ['', '', '', '', '', '', '', ''],
-            ['', '', '', '', '', '', '', ''],
-            ['', '', '', '', '', '', '', ''],
-            ['', '', '♟', '', '', '', '', ''],
-            ['♜', '', '', '', '♚', '', '', '♜']
+        const board = [
+            ['♖', '', '', '', '', '', '', '', '', '♖'],
+            ['', '', '', '', '♔', '', '', '', '', ''],
+            ['', '', '♙', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', '', '', ''],
+            ['', '', '♟', '', '', '', '', '', '', ''],
+            ['♜', '', '', '', '♚', '', '', '', '', '♜']
         ];
 
         function drawBoard() {
             boardElement.innerHTML = '';
             for (let row = 0; row < 8; row++) {
-                for (let col = 0; col < 8; col++) {
+                for (let col = 0; col < 10; col++) {
                     const cell = document.createElement('div');
                     cell.className = 'cell ' + ((row + col) % 2 === 0 ? 'white' : 'black');
+                    cell.innerHTML = board[row][col];
                     cell.dataset.row = row;
                     cell.dataset.col = col;
-
-                    if (initialBoard[row][col] !== '') {
-                        const piece = document.createElement('div');
-                        piece.innerHTML = initialBoard[row][col];
-                        piece.className = 'draggable';
-                        piece.draggable = true;
-                        piece.ondragstart = dragStart;
-                        cell.appendChild(piece);
-                    }
-
-                    cell.ondragover = allowDrop;
-                    cell.ondrop = dropPiece;
+                    cell.addEventListener('click', movePiece);
                     boardElement.appendChild(cell);
                 }
             }
         }
 
-        function dragStart(event) {
-            event.dataTransfer.setData('text/plain', event.target.innerHTML);
-            event.target.style.opacity = '0.5';
-        }
+        function movePiece(event) {
+            const fromRow = prompt("Enter your piece's current row (0-7):");
+            const fromCol = prompt("Enter your piece's current column (0-9):");
+            const toRow = prompt("Enter the row you want to move to (0-7):");
+            const toCol = prompt("Enter the column you want to move to (0-9):");
 
-        function allowDrop(event) {
-            event.preventDefault();
-        }
+            if (board[fromRow][fromCol] && board[toRow][toCol] === '') {
+                board[toRow][toCol] = board[fromRow][fromCol];
+                board[fromRow][fromCol] = '';
+                drawBoard();
 
-        function dropPiece(event) {
-            event.preventDefault();
-            const piece = event.dataTransfer.getData('text/plain');
-            const targetCell = event.target;
-
-            if (targetCell.className.includes('cell')) {
-                targetCell.innerHTML = piece;
-                const previousCell = document.querySelector(`.draggable[draggable='true']`);
-                if (previousCell) {
-                    previousCell.innerHTML = ''; // Remove the piece from the previous cell
+                // Check if the king has been moved to Row 3, Column 9
+                if (toRow == 3 && toCol == 9) {
+                    hintElement.style.display = 'block'; // Show the hint
+                    messageElement.innerText = "You moved the king!";
+                } else {
+                    messageElement.innerText = "Keep playing!";
                 }
-            }
-
-            // Check for completion
-            if (piece === '♔' && targetCell.dataset.row == 0 && targetCell.dataset.col == 4) {
-                messageElement.innerText = "You successfully moved the white king! Here's your next clue: [insert next clue link here]";
             } else {
-                messageElement.innerText = "Keep playing!";
+                alert("Invalid move! Please try again.");
             }
         }
 
