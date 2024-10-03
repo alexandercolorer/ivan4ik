@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Challenge</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f7f0d5;
+            color: #333;
+        }
+        h1 {
+            color: #ff6347;
+        }
+        #board {
+            display: grid;
+            grid-template-columns: repeat(10, 60px);
+            grid-template-rows: repeat(8, 60px);
+            margin: 20px auto;
+            border: 2px solid #333;
+        }
+        .cell {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 36px;
+            border: 1px solid #333;
+        }
+        .white { background-color: #eee; }
+        .black { background-color: #aaa; }
+        input {
+            margin: 10px;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chess Position Challenge</h1>
+    <div id="board"></div>
+    <p>Type the row and column to move the White King (♔) to its correct position.</p>
+    <input type="number" id="rowInput" placeholder="Row (0-7)">
+    <input type="number" id="colInput" placeholder="Column (0-9)">
+    <button id="moveButton">Move King</button>
+    <p id="message"></p>
+    <script src="chessGame.js"></script>
+</body>
+</html>
